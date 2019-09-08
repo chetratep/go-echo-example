@@ -11,22 +11,20 @@ jobs: # basic units of work in a run
 
     steps: # steps that comprise the `build` job
       - checkout # check out source code to working directory
-      - run: mkdir -p $TEST_RESULTS # create the test results directory
-
+      - run:
+          name: "Create a temp directory for artifacts"
+          command: |
+            mkdir -p /tmp/artifacts
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
             - go-echo-sample-{{ checksum "Gopkg.toml" }}
-      - run: 
-          name: Build Project
-          command: |
-            go build
+      - run: go build
+
       - run:
-          name: Run unit tests
-          # store the results of our tests in the $TEST_RESULTS directory
           command: |
-            PACKAGE_NAMES=$(go list ./... | circleci tests split --split-by=timings --timings-type=classname)
-            echo $PACKAGE_NAMES
-            gotestsum --junitfile ${TEST_RESULTS}/gotestsum-report.xml -- $PACKAGE_NAMES
+            go test -coverprofile=c.out
+            go tool cover -html=c.out -o coverage.html
+            mv coverage.html /tmp/artifacts
 
       - save_cache:
           key: go-echo-sample-{{ checksum "Gopkg.toml" }}
