@@ -15,7 +15,7 @@ jobs: # basic units of work in a run
 
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
-            - go-echo-sample-{{ checksum "go.sum" }}
+            - go-echo-sample-{{ checksum "Gopkg.toml" }}
       - run: 
           name: Build Project
           command: |
