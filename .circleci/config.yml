@@ -16,6 +16,10 @@ jobs: # basic units of work in a run
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
             - go-echo-sample-{{ checksum "go.sum" }}
+      - run: 
+          name: Build Project
+          command: |
+            go build
       - run:
           name: Run unit tests
           # store the results of our tests in the $TEST_RESULTS directory
@@ -23,7 +27,6 @@ jobs: # basic units of work in a run
             PACKAGE_NAMES=$(go list ./... | circleci tests split --split-by=timings --timings-type=classname)
             echo $PACKAGE_NAMES
             gotestsum --junitfile ${TEST_RESULTS}/gotestsum-report.xml -- $PACKAGE_NAMES
-      - run: make # pull and build dependencies for the project
 
       - save_cache:
           key: go-echo-sample-{{ checksum "go.sum" }}
