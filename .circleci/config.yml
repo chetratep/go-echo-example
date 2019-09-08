@@ -29,7 +29,7 @@ jobs: # basic units of work in a run
             gotestsum --junitfile ${TEST_RESULTS}/gotestsum-report.xml -- $PACKAGE_NAMES
 
       - save_cache:
-          key: go-echo-sample-{{ checksum "go.sum" }}
+          key: go-echo-sample-{{ checksum "Gopkg.toml" }}
           paths:
             - "/go/pkg/mod"
       - store_artifacts: # upload test summary for display in Artifacts
